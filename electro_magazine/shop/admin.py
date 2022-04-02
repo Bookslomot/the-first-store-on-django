@@ -33,17 +33,9 @@ class CategoryAdmin(admin.ModelAdmin):
     save_on_top = True
 
 
-# class ReviewProductInSubcategory(admin.TabularInline):
-#     model =
-#     extra = 0
-#     readonly_fields = ('name', 'description', 'price_now', 'price_old', 'quantity', 'photo', 'status', 'discount', 'slug', )
-
-
 @admin.register(Subcategory)
 class SubcategoryAdmin(admin.ModelAdmin):
     pass
-    # inlines = [ReviewProductInSubcategory]
-    # save_on_top = True
 
 
 @admin.register(Comment)
