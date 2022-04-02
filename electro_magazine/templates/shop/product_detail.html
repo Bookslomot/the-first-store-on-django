@@ -1,0 +1,78 @@
+{% extends 'shop/main.html' %}
+{% block content %}
+<div style="margin-left: 50px;">
+    <nav aria-label="breadcrumb" class="mt-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home'%}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'category-view' slug=product.cat.slug %}">{{ product.cat.name }}</a></li>
+          {% if product.cat.subcategory %}
+        <li class="breadcrumb-item"><a href="#">{{ product.cat.subcategory.name }}</a></li>
+          {% endif %}
+        <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+      </ol>
+    </nav>
+
+<div class="row">
+    <div class="col-md-4">
+        <img src="{{ product.photo.url }}" class="img-fluid">
+    </div>
+    <div class="col-md-8">
+        <h3>{{ product.name }}</h3>
+        <p>Цена: {{ product.price_now }} Российских рублей. </p>
+        <p> {{product.description }}</p>
+        <hr>
+         <button class="btn btn-outline-dark" type="submit">
+                            <a  {% if request.user.is_authenticated %}href="{% url 'add-to-cart' slug=product.slug %} {% else %}  href="{% url 'login' %} {% endif %}">
+
+                            <i class="bi-cart-fill me-4"></i>
+                            Cart
+                            <span class="badge bg-dark text-white ms-1 rounded-pill">Добавить в корзину</span>
+                            </a>
+         </button>
+    </div>
+    </div>
+</div>
+
+{% if request.user.is_authenticated %}
+ <h3 style="margin-top: 30px; margin-left: 35px">Добавить коментарии</h3>
+<div class="col-md-12" style="margin: 35px 35px 35px 35px">
+            <form style="margin-bottom: 20px" rows="2" class="form-control" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div >{{ form.non_field_errors}}</div>
+                <label class="registration" for="body"> Коментарий:</label>
+                <input id="body" type="text" class="form-control" name="body">
+            <div >{{ form.body.errors }}</div>
+
+ <div class="mar-top clearfix">
+ <button style="margin-top: 5px" class="btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-pencil fa-fw"></i> Добавить</button>
+
+
+
+</div>
+</form>
+{% endif %}
+
+    {% for item in product.comments_products.all %}
+     <div class="panel-body">
+ <!-- Содержание Новостей -->
+ <!--===================================================-->
+ <div class="media-block">
+ <a class="media-left" href="#"><img style="width: 50px; height: 50px; border-radius: 45%" class="img-circle img-sm" alt="Профиль пользователя" {% if not item.owner.photo %} src="https://bootstraptema.ru/snippets/icons/2016/mia/1.png" {% else %} src="{{ item.owner.photo.url }} {% endif %}"></a>
+ <div class="media-body">
+ <div class="mar-btm">
+ <a href="#" class="btn-link text-semibold media-heading box-inline" style="text-decoration: none; color: brown">{{ item.owner.username }}</a>
+ <p class="text-muted text-sm"><i class="fa fa-mobile fa-lg"></i>Дата написания - {{ item.created_at }}</p>
+ </div>
+ <p>{{item.body}}</p>
+ <div class="pad-ver">
+ <div class="btn-group">
+ <a class="btn btn-sm btn-default btn-hover-success" href="#"><i class="fa fa-thumbs-up"></i></a>
+ <a class="btn btn-sm btn-default btn-hover-danger" href="#"><i class="fa fa-thumbs-down"></i></a>
+ </div>
+ <a class="btn btn-sm btn-default btn-hover-primary" href="#">Ответить</a>
+ </div>
+ <hr>
+     {% endfor%}
+    </div>
+
+{% endblock content %}

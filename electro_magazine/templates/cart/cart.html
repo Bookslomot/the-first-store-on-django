@@ -1,0 +1,59 @@
+{% extends 'shop/main.html' %}
+
+{% block content %}
+
+<h3 class="text-center mt-5 mb-5">Ваша корзина {% if not cart.products.count %} пуста  {% endif %}</h3>
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>{{message}}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+{% endif %}
+{% if cart.products.count %}
+<div style="margin: 20px;">
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Наименование</th>
+      <th scope="col">Изображение</th>
+      <th scope="col">Цена</th>
+      <th scope="col">Кол_во</th>
+      <th scope="col">Общая цена</th>
+      <th scope="col">Действие </th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for item in cart.products.all%}
+    <tr>
+      <th scope="row">{{ item.product.name}}</th>
+      <td class="w-25"><img src="{{ item.product.photo.url }}" class="img-fluid"></td>
+      <td>{{ item.content_object.price_now}}</td>
+      <td>
+         <form action="{%  url 'change-gty-to-cart' slug=item.product.slug %}" method="POST">
+          {% csrf_token %}
+          <input type="number" class="form-control" name="qty" min="1" value="{{item.qty }}"/>
+          <br>
+          <input type="submit" class="btn secondary-button-darkbg" value="Изменить колличество">
+        </form>
+      </td>
+      <td>{{ item.final_price }} руб.</td>
+      <td>
+        <a href="{% url 'delete-to-cart' slug=item.product.slug %}">
+          <button class="button-tip">Удалить из корзины</button>
+        </a>
+      </td>
+  {% endfor %}
+  <tr>
+    <td colspan="2"></td>
+    <td>Итог</td>
+    <td>{{cart.total_products }}</td>
+    <td><strong>{{cart.final_price }} руб</strong></td>
+    <td><a href="{% url 'check-out' %}"><button class="btn btn-primary">Перейти у офромлению</button></a></td>
+  </tr>
+  </tbody>
+</table>
+</div>
+{% endif %}
+{% endblock content %}
